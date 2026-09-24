@@ -18,7 +18,7 @@ export interface Profile {
   email: string | null;
   avatar_url: string | null;
   links: Record<string, string>;
-  skills: Record<string, string[]>;
+  skills: { group: string; items: string[] }[];
 }
 
 export interface Project {
@@ -40,9 +40,10 @@ export interface TimelineEntry {
   id: string;
   title: string;
   organization: string;
-  type: "education" | "experience" | "award";
+  type: "education" | "experience" | "award" | "publication" | "certification";
   start_date: string;
   end_date: string | null;
+  date_precision: "month" | "year";
   description: string | null;
   skills_acquired: string[] | null;
 }
@@ -55,12 +56,26 @@ export const FALLBACK_PROFILE: Profile = {
   email: null,
   avatar_url: null,
   links: {},
-  skills: {},
+  skills: [],
 };
 
 export async function getProfile(): Promise<Profile> {
   const { data } = await publicClient().from("site_profile").select("*").maybeSingle<Profile>();
-  return data ?? FALLBACK_PROFILE;
+  if (!data) return FALLBACK_PROFILE;
+  return { ...data, links: data.links ?? {}, skills: normalizeSkills(data.skills) };
+}
+
+/** Accepts the ordered-array format and the older `{ group: items }` object format. */
+function normalizeSkills(raw: unknown): Profile["skills"] {
+  if (Array.isArray(raw)) {
+    return raw.filter((s) => s && typeof s.group === "string" && Array.isArray(s.items));
+  }
+  if (raw && typeof raw === "object") {
+    return Object.entries(raw as Record<string, unknown>)
+      .filter((entry): entry is [string, string[]] => Array.isArray(entry[1]))
+      .map(([group, items]) => ({ group, items }));
+  }
+  return [];
 }
 
 export async function getProjects(): Promise<Project[]> {
@@ -82,9 +97,16 @@ export async function getTimeline(): Promise<TimelineEntry[]> {
   return data ?? [];
 }
 
-export function formatRange(start: string, end: string | null) {
-  const fmt = (d: string) => new Date(d).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
-  return `${fmt(start)} – ${end ? fmt(end) : "Present"}`;
+export function formatRange(start: string, end: string | null, precision: "month" | "year" = "month") {
+  const fmt = (d: string) =>
+    new Date(d).toLocaleDateString("en-US", {
+      month: precision === "month" ? "short" : undefined,
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  if (!end) return `${fmt(start)} – Present`;
+  // One-off items (awards, publications) and single-month roles show a single date.
+  return fmt(start) === fmt(end) ? fmt(start) : `${fmt(start)} – ${fmt(end)}`;
 }
 
 export function isVideo(url: string) {

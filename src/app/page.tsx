@@ -14,7 +14,7 @@ export default async function Home() {
   const [profile, projects, timeline] = await Promise.all([getProfile(), getProjects(), getTimeline()]);
   const visibleProjects = projects.filter((p) => !isPlaceholder(p.title));
   const visibleTimeline = timeline.filter((t) => !isPlaceholder(t.title));
-  const skills = Object.entries(profile.skills).filter(([, list]) => list.length);
+  const skills = profile.skills.filter((s) => s.items.length);
 
   return (
     <main>
@@ -68,7 +68,7 @@ export default async function Home() {
           <aside>
             <h2 className="mb-8 font-serif text-3xl text-primary">Toolkit</h2>
             <div className="space-y-5">
-              {skills.map(([group, list]) => (
+              {skills.map(({ group, items: list }) => (
                 <div key={group}>
                   <h3 className="mb-2 text-xs font-semibold tracking-widest text-secondary uppercase">{group}</h3>
                   <div className="flex flex-wrap gap-2">

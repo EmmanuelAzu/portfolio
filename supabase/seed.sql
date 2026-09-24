@@ -1,34 +1,65 @@
--- Portfolio seed data.
---
--- The three projects below are real work (this portfolio's sibling repos and
--- the Creative Chaos hackathon system). Every row marked TODO is a placeholder:
--- replace it with your real CV details before deploying.
+-- Portfolio seed data, from Emmanuel Azubuike's CV (29 Aug 2026).
+-- Academic marks are intentionally left out. Re-running is safe: every table is cleared and re-seeded.
+
+begin;
 
 insert into site_profile (full_name, headline, bio, location, email, avatar_url, links, skills) values (
   'Emmanuel Azubuike',
-  'Full-stack developer · Next.js, TypeScript & Supabase',
-  'TODO: two or three sentences about who you are, what you build and what you are looking for next.',
-  'TODO: City, Country',
-  'TODO: you@example.com',
-  null, -- TODO: upload a headshot to the portfolio-media bucket and paste its public URL
+  'Computer Science Honours student · Data science, machine learning & software',
+  'Computer Science graduate and Honours student at Wits University with a passion for problem-solving, '
+  'mathematics and technology. I have led teams and events across student societies at Wits, co-authored '
+  'quantum machine learning research, and I enjoy communicating complex ideas clearly. My goal is a career '
+  'in data science and analytics.',
+  'Johannesburg, South Africa',
+  'azubuikee290@gmail.com',
+  null, -- upload a headshot to the portfolio-media bucket and paste its public URL here
   '{"github": "https://github.com/EmmanuelAzu"}',
-  '{
-    "Languages": ["TypeScript", "JavaScript", "SQL"],
-    "Frameworks": ["Next.js", "React", "Tailwind CSS"],
-    "Platforms": ["Supabase", "Vercel", "PostgreSQL"]
-  }'
+  '[
+    {"group": "Languages", "items": ["Python", "Java", "C++", "C", "CUDA", "SQL", "JavaScript", "TypeScript"]},
+    {"group": "Frameworks & tools", "items": ["Qiskit", "Next.js", "React", "Supabase", "Tailwind CSS"]},
+    {"group": "Strengths", "items": ["Strategic thinking", "Problem solving", "Leadership", "Research"]}
+  ]'
 ) on conflict (id) do update set
   full_name = excluded.full_name, headline = excluded.headline, bio = excluded.bio,
   location = excluded.location, email = excluded.email, avatar_url = excluded.avatar_url,
   links = excluded.links, skills = excluded.skills;
 
+delete from portfolio_projects;
+
 insert into portfolio_projects
   (title, slug, category, short_description, detailed_markdown, tech_stack, github_url, order_index)
 values
 (
+  'Quantum Neural Networks for Optical Mode Classification',
+  'quantum-neural-network-hg-modes',
+  'academic',
+  'A deep quantum neural network that classifies Hermite-Gaussian (HG) laser modes, built during a research internship at SA QuTI.',
+  $md$
+## Overview
+
+Research internship at the **South African Quantum Technology Initiative** (January 2026),
+working with the Wits School of Physics.
+
+- Designed and implemented a **deep quantum neural network** for Hermite-Gaussian (HG) mode image classification
+- Built with **Python** and IBM's **Qiskit** library
+- Reached **85% model prediction accuracy**
+- Implemented research experiments from the Wits School of Physics
+
+## Publication
+
+Co-author of *Inverse design of optical neural networks with qubit-based quantum computers*,
+presented at the South African Institute of Physics Conference (SAIP2026), Track F – Applied Physics.
+
+> Azevedo, N., Azubuike, E., Ornelas, P. D., Gaikwad, A., Nape, I., Sinayskiy, I., Snyman, J., & Koni, M. (2026).
+  $md$,
+  array['Python', 'Qiskit', 'Quantum machine learning'],
+  null,
+  1
+),
+(
   'Creative Chaos Hackathon System',
   'creative-chaos-hackathon',
-  'commercial', -- TODO: confirm category
+  'personal',
   'Registration, QR check-in, judging, live leaderboard and a final-reveal ceremony for a hackathon, in one app.',
   $md$
 ## Overview
@@ -47,9 +78,29 @@ An end-to-end event platform used to run the Creative Chaos hackathon.
 - Server-only admin actions using the service role key
 - Aggregation views that turn raw judge scores into rankings
   $md$,
-  array['Next.js', 'TypeScript', 'Supabase', 'Tailwind CSS', 'Framer Motion', 'pdf-lib'],
-  'https://github.com/EmmanuelAzu/Creative-Chaos-Hackathon', -- TODO: set to null if the repo stays private
-  1
+  array['Next.js', 'TypeScript', 'Supabase', 'Tailwind CSS', 'Framer Motion'],
+  'https://github.com/EmmanuelAzu/Creative-Chaos-Hackathon',
+  2
+),
+(
+  'MarketIQ',
+  'marketiq',
+  'personal',
+  'AI-powered stock research: annotated candlestick charts, Claude news-sentiment analysis and a strategy backtester.',
+  $md$
+## Overview
+
+A financial-intelligence app combining interactive charts, AI analysis and backtesting.
+
+## Engineering highlights
+
+- A canvas drawing layer on TradingView Lightweight Charts (trendlines, Fibonacci, notes), anchored in date/price space
+- News sentiment from Claude, returned as structured, validated output and cached per ticker
+- SMA-crossover backtester with stop loss / take profit and next-open fills, so there's no look-ahead bias
+  $md$,
+  array['Next.js 15', 'TypeScript', 'Lightweight Charts', 'Anthropic API', 'Supabase'],
+  'https://github.com/EmmanuelAzu/market_Iq',
+  3
 ),
 (
   'ShareWallet',
@@ -68,9 +119,9 @@ Postgres function, and members vote on each other's purchases in real time.
 - Supabase Realtime pushes new requests and votes to every member
 - Spend analytics: monthly burn, per-member leaderboard, category breakdown
   $md$,
-  array['Next.js 15', 'TypeScript', 'Supabase', 'PostgreSQL', 'Recharts', 'shadcn/ui'],
-  null, -- TODO: add the repo URL once published
-  2
+  array['Next.js 15', 'TypeScript', 'Supabase', 'PostgreSQL', 'Recharts'],
+  'https://github.com/EmmanuelAzu/share-wallet',
+  4
 ),
 (
   'CodeSim',
@@ -90,31 +141,78 @@ instant test feedback.
 - XP and a realtime solve feed maintained by database triggers
   $md$,
   array['Next.js 15', 'TypeScript', 'Monaco', 'Supabase Realtime', 'Judge0'],
-  null, -- TODO: add the repo URL once published
-  3
-),
-(
-  'TODO: Academic project title',
-  'todo-academic-project',
-  'academic',
-  'TODO: one-line summary of a university or course project.',
-  $md$
-## TODO
+  'https://github.com/EmmanuelAzu/code-sim',
+  5
+);
 
-Describe the problem, your role, the approach and the result. Add screenshots
-to the `portfolio-media` bucket and list their URLs in `gallery_urls`.
-  $md$,
-  array['TODO'],
-  null,
-  4
-)
-on conflict (slug) do nothing;
+delete from career_timeline;
 
-insert into career_timeline (title, organization, type, start_date, end_date, description, skills_acquired) values
-  ('TODO: Degree, e.g. B.Sc. Computer Science', 'TODO: University', 'education', '2021-09-01', null,
-   'TODO: relevant coursework, grade or thesis.', array['TODO']),
-  ('TODO: Role, e.g. Software Developer', 'TODO: Company', 'experience', '2024-01-01', null,
-   'TODO: what you built and the impact it had.', array['TODO']),
-  ('Organiser & developer, Creative Chaos Hackathon', 'Creative Chaos', 'experience', '2026-01-01', null, -- TODO: real start/end dates
-   'Built and ran the event platform: registration, QR check-in, judging and the live final reveal.',
-   array['Next.js', 'Supabase', 'Event operations']);
+insert into career_timeline
+  (title, organization, type, start_date, end_date, date_precision, description, skills_acquired)
+values
+  -- Education
+  ('BSc Honours in Computer Science', 'University of the Witwatersrand', 'education',
+   '2026-02-01', '2026-12-31', 'month',
+   'Postgraduate Merit Award recipient 2026 (fully funded scholarship). Teaching Assistant for Machine Learning III, '
+   'Software Design III and Parallel Computing III; Head Tutor for Basic Computer Organization I.',
+   array['Machine learning', 'Teaching', 'Parallel computing']),
+  ('BSc in Computer Science', 'University of the Witwatersrand', 'education',
+   '2023-02-01', '2025-12-31', 'month',
+   'Wits Council Merit Scholarship (2025) and Wits Entrance Scholarship (2023). Computer Science III Class Representative.',
+   array['Algorithms', 'Software design', 'Leadership']),
+  ('National Senior Certificate', 'Liberty Community School', 'education',
+   '2018-01-01', '2022-12-31', 'month',
+   'Head Boy (2022) and Prefect (2018–2021). Merit Bursary alumnus (2017–2022). Best Performer in Computer Applications '
+   'Technology in the Johannesburg East District.',
+   null),
+
+  -- Experience
+  ('Research Intern', 'South African Quantum Technology Initiative', 'experience',
+   '2026-01-01', '2026-01-31', 'month',
+   'Designed and implemented a deep quantum neural network for HG mode image classification with Python and IBM''s Qiskit, '
+   'reaching 85% model prediction accuracy, and implemented research experiments from the Wits School of Physics.',
+   array['Python', 'Qiskit', 'Quantum machine learning']),
+  ('Head of Events & Partnerships', 'Wits Developer Society', 'experience',
+   '2025-02-01', null, 'month',
+   'Plan events for a 600+ member club and drive initiatives that upskill students in software development. '
+   'Established partnerships and sponsorships with renowned tech firms.',
+   array['Event management', 'Partnerships']),
+  ('Outreach Manager', 'Wits AWS Cloud Club', 'experience',
+   '2025-03-01', '2025-12-31', 'month',
+   'Led the "AI IN ACTION" hackathon for 130 students, raising R50,000 from sponsors including Standard Bank, '
+   'BBD Software, BSG, Elenjical Solutions, BoxFusion and MWR CyberSec. Coordinated workshops with tech companies '
+   'to build AWS cloud skills for 600+ members.',
+   array['Fundraising', 'AWS', 'Hackathon operations']),
+  ('Director of Case Workshops', 'Wits Consulting Club', 'experience',
+   '2024-11-01', '2026-02-28', 'month',
+   'Led case workshop preparation and competitions for aspiring consultants, and co-founded the "Case Buddy Programme", '
+   'a biweekly case prep series led by experienced consultants.',
+   array['Case interviews', 'Workshop design']),
+
+  -- Publications
+  ('Inverse design of optical neural networks with qubit-based quantum computers',
+   'SAIP2026 · South African Institute of Physics Conference, Track F – Applied Physics', 'publication',
+   '2026-01-01', '2026-01-01', 'year',
+   'Co-author with Azevedo, N., Ornelas, P. D., Gaikwad, A., Nape, I., Sinayskiy, I., Snyman, J. and Koni, M.',
+   array['Quantum computing', 'Optical neural networks']),
+
+  -- Awards & competitions
+  ('BCG Case Competition: First Runner-Up', 'Boston Consulting Group', 'award',
+   '2025-07-01', '2025-07-01', 'month',
+   'Placed 2nd of 30 teams in a national competition on South Africa''s energy transition, proposing data-driven '
+   'initiatives for energy security across policy, infrastructure and financing.',
+   array['Strategy', 'Data-driven analysis']),
+
+  -- Certifications
+  ('M&A Finance Accelerator', 'AmplifyME', 'certification',
+   '2026-05-01', '2026-05-01', 'month',
+   'Built a multi-year projected operating model for Tesla Inc. from historical data, market trends and broker estimates, '
+   'then ran DCF and trading-multiples valuations to construct a valuation football field.',
+   array['Financial modelling', 'DCF valuation']),
+  ('Investment Banking Job Simulation', 'JPMorganChase (via Forage)', 'certification',
+   '2024-11-01', '2024-11-01', 'month',
+   'Identified M&A targets against strategic and financial criteria and built a DCF model accounting for competitor bids '
+   'and supply chain interruptions.',
+   array['M&A', 'DCF valuation']);
+
+commit;

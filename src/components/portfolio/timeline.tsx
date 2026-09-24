@@ -1,7 +1,13 @@
-import { Award, Briefcase, GraduationCap } from "lucide-react";
+import { Award, BadgeCheck, BookOpen, Briefcase, GraduationCap } from "lucide-react";
 import { formatRange, type TimelineEntry } from "@/lib/data";
 
-const ICONS = { education: GraduationCap, experience: Briefcase, award: Award };
+const ICONS = {
+  education: GraduationCap,
+  experience: Briefcase,
+  award: Award,
+  publication: BookOpen,
+  certification: BadgeCheck,
+};
 
 export function Timeline({ entries }: { entries: TimelineEntry[] }) {
   if (!entries.length) return <p className="text-muted-foreground">Timeline coming soon.</p>;
@@ -14,7 +20,7 @@ export function Timeline({ entries }: { entries: TimelineEntry[] }) {
             <span className="absolute -left-4 flex size-8 items-center justify-center rounded-full border border-secondary bg-background">
               <Icon className="size-4 text-primary" />
             </span>
-            <p className="text-xs tracking-wide text-muted-foreground">{formatRange(e.start_date, e.end_date)}</p>
+            <p className="text-xs tracking-wide text-muted-foreground">{formatRange(e.start_date, e.end_date, e.date_precision)}</p>
             <h3 className="mt-1 font-semibold">{e.title}</h3>
             <p className="text-sm text-primary">{e.organization}</p>
             {e.description && <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{e.description}</p>}

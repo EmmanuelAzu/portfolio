@@ -18,17 +18,21 @@ psql "$DATABASE_URL" -f supabase/seed.sql
 npm run dev
 ```
 
-### Filling in your details
+### Content
 
-`supabase/seed.sql` has real entries for the Creative Chaos, ShareWallet and
-CodeSim projects. Everything else is a **`TODO`** placeholder: bio, location,
-email, education, work history and an academic project. The site and the CV
-**hide any row or field that still starts with `TODO`**, so a half-filled seed
-never shows placeholders to visitors.
+`supabase/seed.sql` is generated from the CV (29 Aug 2026), with **academic marks
+and the phone number deliberately left out**. It's safe to re-run: it replaces
+all projects and timeline rows.
 
-Add pictures and walkthrough videos to the public `portfolio-media` Storage
-bucket, then paste their public URLs into `featured_image_url`, `gallery_urls`
-or `site_profile.avatar_url`. `.mp4` / `.webm` files play as videos in the lightbox.
+- **Timeline types:** `education`, `experience`, `award`, `publication`, `certification`.
+  One-off items (awards, publications, certifications) set `end_date = start_date`.
+  Use `date_precision = 'year'` when only the year is known.
+- **Skills** are an ordered list: `[{ "group": "Languages", "items": [...] }]`.
+- Any row or field whose text starts with `TODO` is hidden on the site and in the CV.
+
+Add a headshot, screenshots and walkthrough videos to the public `portfolio-media`
+Storage bucket, then paste their public URLs into `site_profile.avatar_url`,
+`featured_image_url` or `gallery_urls`. `.mp4` / `.webm` files play as videos.
 
 ## Features
 
@@ -36,7 +40,7 @@ or `site_profile.avatar_url`. `.mp4` / `.webm` files play as videos in the light
 | --- | --- |
 | **Filterable masonry grid** | Academic / Personal / Commercial filters with Framer Motion layout animations and a shared-layout active pill. |
 | **Project pages** | Markdown write-ups, tech stack, live/source links and a keyboard-navigable lightbox (←/→/Esc) for images and videos. |
-| **Career timeline** | Education, experience and awards, newest first. |
+| **Career timeline** | Education, experience, publications, awards and certifications, newest first. |
 | **Dynamic CV** | `GET /cv` renders an A4 PDF from `site_profile`, `career_timeline` and `portfolio_projects` (`/cv?view` opens it inline). |
 | **Contact form** | Zod-validated `/api/contact` with a honeypot, stored in `contact_inquiries`. |
 

@@ -12,7 +12,8 @@ create table site_profile (
   email text,
   avatar_url text,
   links jsonb not null default '{}'::jsonb, -- { "github": "...", "linkedin": "...", "website": "..." }
-  skills jsonb not null default '{}'::jsonb -- { "Languages": ["TypeScript", ...], "Frameworks": [...] }
+  -- Ordered list (jsonb objects don't keep key order): [{ "group": "Languages", "items": ["Python", ...] }]
+  skills jsonb not null default '[]'::jsonb
 );
 
 create table portfolio_projects (
@@ -34,9 +35,10 @@ create table career_timeline (
   id uuid default uuid_generate_v4() primary key,
   title text not null,
   organization text not null,
-  type text check (type in ('education', 'experience', 'award')),
+  type text check (type in ('education', 'experience', 'award', 'publication', 'certification')),
   start_date date not null,
-  end_date date, -- null = present
+  end_date date, -- null = present; equal to start_date for one-off items (awards, publications)
+  date_precision text not null default 'month' check (date_precision in ('month', 'year')),
   description text,
   skills_acquired text[]
 );
