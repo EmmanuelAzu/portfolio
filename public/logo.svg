@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="EA monogram">
+  <rect width="64" height="64" rx="10" fill="#FAFAFA"/>
+  <!-- Fine gold frame -->
+  <rect x="5" y="5" width="54" height="54" rx="7" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
+  <rect x="9" y="9" width="46" height="46" rx="4" fill="#4A5D4E"/>
+  <!-- Geometric E -->
+  <path d="M16 20h13M16 32h10M16 44h13M16 20v24" fill="none" stroke="#FAFAFA" stroke-width="3.5" stroke-linecap="square"/>
+  <!-- Geometric A sharing the baseline, crossbar in gold -->
+  <path d="M33 44l7.5-24L48 44" fill="none" stroke="#FAFAFA" stroke-width="3.5" stroke-linejoin="miter"/>
+  <path d="M36 36h9" stroke="#D4AF37" stroke-width="2.5"/>
+</svg>
