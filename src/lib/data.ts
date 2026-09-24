@@ -3,9 +3,11 @@ import { createClient as createSupabase } from "@supabase/supabase-js";
 // Portfolio content is public, so a cookie-less client lets pages be statically
 // generated and revalidated instead of rendered per request.
 function publicClient() {
-  return createSupabase(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
-    auth: { persistSession: false },
-  });
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // Before Supabase is connected, render the fallback content instead of failing the build.
+  if (!url || !key) return null;
+  return createSupabase(url, key, { auth: { persistSession: false } });
 }
 
 export type Category = "academic" | "personal" | "commercial";
@@ -60,7 +62,9 @@ export const FALLBACK_PROFILE: Profile = {
 };
 
 export async function getProfile(): Promise<Profile> {
-  const { data } = await publicClient().from("site_profile").select("*").maybeSingle<Profile>();
+  const db = publicClient();
+  if (!db) return FALLBACK_PROFILE;
+  const { data } = await db.from("site_profile").select("*").maybeSingle<Profile>();
   if (!data) return FALLBACK_PROFILE;
   return { ...data, links: data.links ?? {}, skills: normalizeSkills(data.skills) };
 }
@@ -79,17 +83,23 @@ function normalizeSkills(raw: unknown): Profile["skills"] {
 }
 
 export async function getProjects(): Promise<Project[]> {
-  const { data } = await publicClient().from("portfolio_projects").select("*").order("order_index").returns<Project[]>();
+  const db = publicClient();
+  if (!db) return [];
+  const { data } = await db.from("portfolio_projects").select("*").order("order_index").returns<Project[]>();
   return data ?? [];
 }
 
 export async function getProject(slug: string): Promise<Project | null> {
-  const { data } = await publicClient().from("portfolio_projects").select("*").eq("slug", slug).maybeSingle<Project>();
+  const db = publicClient();
+  if (!db) return null;
+  const { data } = await db.from("portfolio_projects").select("*").eq("slug", slug).maybeSingle<Project>();
   return data;
 }
 
 export async function getTimeline(): Promise<TimelineEntry[]> {
-  const { data } = await publicClient()
+  const db = publicClient();
+  if (!db) return [];
+  const { data } = await db
     .from("career_timeline")
     .select("*")
     .order("start_date", { ascending: false })
