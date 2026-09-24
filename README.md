@@ -18,6 +18,8 @@ psql "$DATABASE_URL" -f supabase/seed.sql
 npm run dev
 ```
 
+Deploying to Vercel + Supabase: see [DEPLOY.md](DEPLOY.md).
+
 ### Content
 
 `supabase/seed.sql` is generated from the CV (29 Aug 2026), with **academic marks
